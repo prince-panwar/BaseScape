@@ -16,7 +16,7 @@ import {
   useReadContract,
   
 } from "wagmi";
-import {useUserContext} from "../context/userContext"
+import {useUserContext} from "../../context/userContext"
 import { parseEther, erc20Abi, formatEther } from "viem";
 
 const Stake = () => {

@@ -12,7 +12,7 @@ import Sidebar from "./components/sidebar";
 import Dropdown from "./components/dropdown";
 import {useRouter} from "next/navigation";
 import { verify } from "crypto";
-import { useUserContext } from "./context/userContext";
+import { useUserContext } from "../context/userContext";
 const Home = () => {
   const { verifyUser} = useUserContext();
   const [connectbtn, setConnectBtn] = useState(false);
