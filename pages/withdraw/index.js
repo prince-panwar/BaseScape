@@ -1,11 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../components/sidebar";
 import CustomInput from "../components/input";
 import Button from "../components/button";
 import styles from"./withdraw.module.css";
 import Dropdown from "../components/dropdown";
+import contractabi from "../helpers/FixedStaking.json"
+import {
+  useAccount,
+  useSendTransaction,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+  useReadContract,
+  
+} from "wagmi";
 
 const Withdraw = () => {
+  const CONTRACT_ADDRESS="0x6bE10596970838b5f42695ecf869013d6D52DCA6";
+ const ABI = contractabi.abi;
+ const {writeContract:writewithdraw,data:Hash, isPending:Pending} = useWriteContract();
+ const {isLoading: isConfirming, isSuccess: isConfirmed,error :Error} = useWaitForTransactionReceipt({hash:Hash});
+  async function handleWithdraw() {
+   writewithdraw({
+        abi:  ABI,
+       
+        address: CONTRACT_ADDRESS,
+        functionName: "withdrawTokens",
+        args: [],
+      });
+    
+  }
+  useEffect(() => {
+    if(isConfirmed){
+      updateDB
+    }
+  }, [isConfirmed]);
   return (
     <div className="withdraw-page bg">
       <div>
@@ -17,7 +45,7 @@ const Withdraw = () => {
             // onChange={handleChange}
             placeholder="Enter amount to withdraw"
           />
-          <Button className="yellow-btn">Withdraw</Button>
+          <Button onClick={handleWithdraw} className="yellow-btn">Withdraw</Button>
         </div>
         <div className="table-wrapper">
           <table>

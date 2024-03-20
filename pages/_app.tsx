@@ -1,7 +1,7 @@
 import '../styles/globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import type { AppProps } from 'next/app';
-
+import {UserProvider} from './context/userContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import {
@@ -16,8 +16,8 @@ import {
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 
 const config = getDefaultConfig({
-  appName: 'RainbowKit App',
-  projectId: 'YOUR_PROJECT_ID',
+  appName: "plena-dapp",
+  projectId: "a9f89b9a755885ebf013bbe8693fa026",
   chains: [
     mainnet,
     polygon,
@@ -34,6 +34,7 @@ const client = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
+    <UserProvider>
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
         <RainbowKitProvider>
@@ -41,6 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
+    </UserProvider>
   );
 }
 

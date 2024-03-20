@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model tbl_deposit {
+  id       BigInt @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  username String @db.Text
+  amount   Float
+  claim    Int
+}
+model Vote {
+  id         BigInt  @id @default(autoincrement()) @db.UnsignedBigInt
+  userId     String  @db.Text
+  candidate  String  @db.Text
+  createdAt  DateTime @default(now())
+}

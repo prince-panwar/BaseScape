@@ -16,7 +16,7 @@ const Sidebar = () => {
   const [open, setOpen] = useState();
   const [menu, setMenu] = useState(false);
   const [selected, setIsSelected] = useState("Choose one");
-
+ 
   useEffect(() => {
     const pathname = router.pathname;
     switch (pathname) {
@@ -91,22 +91,22 @@ const Sidebar = () => {
               style={{ display: menu ? "block" : "none" }}
             >
               <div className={activeItem === "Deposit" ? "active" : ""}>
-                <Link href="/deposit">
+                <Link href={`/deposit`}>
                   <span onClick={() => setMenu(false)}>Deposit</span>
                 </Link>
               </div>
               <div className={activeItem === "Withdraw" ? "active" : ""}>
-                <Link href="/withdraw">
+                <Link href={`/withdraw`}>
                   <span onClick={() => setMenu(false)}>Withdraw</span>
                 </Link>
               </div>
               <div className={activeItem === "Stake" ? "active" : ""}>
-                <Link href="/stake">
+                <Link href={`/stake`}>
                   <span onClick={() => setMenu(false)}>Stake</span>
                 </Link>
               </div>
               <div className={activeItem === "Vote" ? "active" : ""}>
-                <Link href="/vote">
+                <Link href={`/vote`}>
                   <span onClick={() => setMenu(false)}>Vote</span>
                 </Link>
               </div>
