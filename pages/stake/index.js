@@ -5,8 +5,7 @@ import Button from "../components/button";
 import contractabi from "../helpers/FixedStaking.json"
 import tokenabi from "../helpers/TestToken.json";
 import styles from "./stake.module.css";
-import Dropdown from "../components/dropdown";
-import { useRouter } from 'next/router'
+
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   useAccount,
@@ -18,7 +17,7 @@ import {
 } from "wagmi";
 import {useUserContext} from "../../context/userContext"
 import { parseEther, erc20Abi, formatEther } from "viem";
-
+import { useRouter } from "next/navigation";
 const Stake = () => {
   const {username} = useUserContext();
   console.log(username)
@@ -27,7 +26,9 @@ const Stake = () => {
   const {isConnected} = useAccount();
   const ABI = contractabi.abi;
   const TOKEN_ABI = tokenabi.abi;
-  
+  const Router = useRouter();
+  useEffect(() => {if(!username){Router.push("./")}},[username])
+
   const CONTRACT_ADDRESS="0x6bE10596970838b5f42695ecf869013d6D52DCA6";
   const TOKEN_ADDRESS = "0x2a4c6394886502942d4Dd3d0Fd5E0B6245136f0d";
 

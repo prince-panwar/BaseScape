@@ -13,12 +13,17 @@ import {
   useReadContract,
   
 } from "wagmi";
-
+ import { ConnectButton } from "@rainbow-me/rainbowkit";
+ import { useUserContext } from "../../context/userContext";
+ import { useRouter } from "next/navigation";
 const Withdraw = () => {
   const CONTRACT_ADDRESS="0x6bE10596970838b5f42695ecf869013d6D52DCA6";
  const ABI = contractabi.abi;
  const {writeContract:writewithdraw,data:Hash, isPending:Pending} = useWriteContract();
  const {isLoading: isConfirming, isSuccess: isConfirmed,error :Error} = useWaitForTransactionReceipt({hash:Hash});
+ const {username} = useUserContext();
+ const Router = useRouter();
+ useEffect(() => {if(!username){Router.push("./")}},[username])
   async function handleWithdraw() {
    writewithdraw({
         abi:  ABI,
@@ -39,7 +44,7 @@ const Withdraw = () => {
       <div>
         <Sidebar />
         <div className="black-card-wrapper">
-          <Dropdown />
+          <ConnectButton/>
           <CustomInput
             // value="Custom"
             // onChange={handleChange}

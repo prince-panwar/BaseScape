@@ -15,10 +15,11 @@ import {
 } from "wagmi";
 import { parseEther, erc20Abi, formatEther } from "viem";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useRouter } from "next/navigation";
 const Deposit = () => {
   const { username } = useUserContext();
   const [amount, setAmount] = useState();
- 
+ const Router = useRouter();
   const TOKEN_ADDRESS="0x6C6e2C5a4EB108A1F3c985d5A7F4f233483e952F";
   const RECIPIENT_ADDRESS = "0x3896f27Da41d445dC2A302Bd850748EC0A747280";
   const [update, setUpdate] = useState([]);
@@ -33,7 +34,7 @@ const Deposit = () => {
 
   const {writeContract:writeDeposit,data:depositHash, isPending:depositPending,error:depositError} = useWriteContract();
   const {isLoading: isDepositConfirming, isSuccess: isDepositConfirmed,} = useWaitForTransactionReceipt({hash: depositHash});
-  
+  useEffect(() => {if(!username){Router.push("./")}},[username])
   async function getDeposits() {
     const Deposits = await fetch("/api/getDeposits");
     return Deposits.json();

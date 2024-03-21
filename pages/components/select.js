@@ -1,12 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
 import DownArrow from '../../public/Images/png/down_arrow.png'
 
-const CustomSelect = () => {
+const CustomSelect = ({username}) => {
   const ref = useRef();
   const [isActive, setIsActive] = useState(false);
   const [selected, setIsSelected] = useState("Item 1");
   const [open, setOpen] = useState();
 
+  const handleVote = async () => {
+    const body = {
+      userId: username,
+      candidate: selected,
+    };
+    await fetch("/api/vote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });}
   useEffect(() => {
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {
