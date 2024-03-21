@@ -159,7 +159,7 @@ const Stake = () => {
               {!!balance && typeof balance === 'bigint' && ( <span>{formatEther(balance)}</span>  )}
             </div>
           </div>
-          <Button onClick={approvetoken} className="yellow-btn">{isApproveConfirming ? "Confirming..." : "deposit"}</Button>
+          <Button onClick={approvetoken} className="yellow-btn">{isApproveConfirming ? "Confirming..." : "stake"}</Button>
           {stakeError&&(<div><span>{stakeError}</span></div>)}
         </div>
       </div>
