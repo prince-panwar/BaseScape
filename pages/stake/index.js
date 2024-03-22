@@ -23,7 +23,7 @@ const Stake = () => {
   console.log(username)
   const [stake, setStakes] = useState();
   const [activeIndex, setActiveIndex] = useState(0);
-  const {isConnected} = useAccount();
+  const {address,isConnected} = useAccount();
   const ABI = contractabi.abi;
   const TOKEN_ABI = tokenabi.abi;
   const Router = useRouter();
@@ -67,7 +67,7 @@ const Stake = () => {
 }
 
     useEffect(() => {
-      console.log("isApproveConfirmed")
+      console.log("isApproveConfirmed "+isApproveConfirmed)
       if (isApproveConfirmed) {
         writeStake({
           abi: ABI,
@@ -75,7 +75,7 @@ const Stake = () => {
           functionName: "stakeTokens",
           args:[activeIndex, parseEther(stake)],
       
-      })
+      },[])
         
         
       
@@ -116,10 +116,18 @@ const Stake = () => {
   functionName: "getTVL",
   args: [],
 });
+ const { data: userbalance,error:userreaderror } = useReadContract({
+  abi: TOKEN_ABI,
+  address: TOKEN_ADDRESS,
+  functionName: "balanceOf",
+  args: [address],
+});
  
  const handleActive = (index) => {
     setActiveIndex(index);
   };
+  console.log(userreaderror)
+  console.log(userbalance)
   return (
     <div className="stake-page bg">
       <div>
@@ -131,6 +139,7 @@ const Stake = () => {
             onChange={(e) => {setStakes(e.target.value)}}
             placeholder="Enter amount to stake"
           />
+         {!!userbalance && typeof userbalance === 'bigint' && ( <span style={{ color: 'rgba(245, 241, 5)', fontFamily:"sans-serif" }}>Balance {formatEther(userbalance)} $scape</span>  )} 
           <div className="detail">
             <div>
               <span>Days</span>
