@@ -19,9 +19,20 @@ export const UserProvider = ({ children }) => {
     if (data.length > 0) {
       router.push(`/deposit`);
     } else {
-      alert("User not found");
+      const body = {
+        username: username,
+        amount: 0,
+      };
+      await fetch("/api/addUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      router.push(`/deposit`);
     }
-  };
+
+    };
+
 
   return (
     <UserContext.Provider value={{ username, verifyUser }}>

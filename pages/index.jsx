@@ -20,16 +20,7 @@ const Home = () => {
   const [user, setUser] = useState("");
   const router = useRouter();
   const {isConnected} = useAccount();
-  // const verifyUser = async () => {
-  //   console.log(user);
-  //   const res = await fetch("/api/userVerification?username="+user);
-  //      const data = await res.json();
-  //      if(data.length>0){
-  //       router.push(`/deposit`);
-  //      }else{
-  //        alert("User not found");
-  //      }
-  //    }
+ 
   return (
     <div className="login bg">
       <div>
