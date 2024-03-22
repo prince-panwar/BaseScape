@@ -126,8 +126,9 @@ const Stake = () => {
  const handleActive = (index) => {
     setActiveIndex(index);
   };
-  console.log(userreaderror)
-  console.log(userbalance)
+  // console.log(userreaderror)
+  // console.log(userbalance)
+  useEffect(() => {if(stakeError){alert(stakeError.message)}}, [stakeError]);
   return (
     <div className="stake-page bg">
       <div>
@@ -169,7 +170,7 @@ const Stake = () => {
             </div>
           </div>
           <Button onClick={approvetoken} className="yellow-btn">{isApproveConfirming ? "Confirming..." : "stake"}</Button>
-          {stakeError&&(<div><span>{stakeError}</span></div>)}
+         
         </div>
       </div>
     </div>
