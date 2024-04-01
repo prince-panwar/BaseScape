@@ -1,0 +1,86 @@
+.login.bg {
+    position: relative;
+    padding-top: 5%;
+    height: 100vh;
+    overflow: auto;
+  }
+  .login .black-card-wrapper {
+    height: 100%;
+    border: 1px solid;
+    border-image: linear-gradient(
+        to bottom,
+        rgba(237, 230, 216, 1),
+        rgba(8, 8, 8, 1),
+        rgba(237, 230, 216, 1)
+      )
+      1;
+    background-color: #0b0c07;
+    box-shadow: 0px 0px 10px 0px rgba(73, 82, 14, 1) inset;
+  
+  }
+  .login .black-card-wrapper > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    gap: 30px;
+  }
+  .login.bg > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+  }
+  .login.bg > div .sidebar-wrapper {
+    margin-right: 80px;
+  }
+  .login .black-card-wrapper p {
+    line-height: 40px;
+    font-size: 22px;
+    font-weight: 700;
+    width: 70%;
+    margin: 0 auto;
+    color: rgba(244, 255, 176, 1);
+  }
+  .login .black-card-wrapper {
+    min-width: 430px;
+    text-align: center;
+  }
+  .login.bg > div .sidebar-wrapper ul {
+    display: none;
+  }
+  .login .black-card-wrapper .submit-page {
+    gap: 20px;
+  }
+  
+  @media only screen and (max-width: 1199px) {
+    .login.bg {
+      padding-bottom: 20px;
+    }
+    .login.bg > div {
+      padding: 20px;
+      height: auto;
+  
+    }
+    .login .black-card-wrapper {
+      width: 100%;
+      min-width: 100%;
+      height: auto;
+      padding: 40px;
+    }
+    .login .black-card-wrapper button,
+    .login .black-card-wrapper .submit-page .dropdown,
+    .login .black-card-wrapper .submit-page .custom-select-container{
+      width: 100%;
+    }
+    .login .black-card-wrapper p {
+      width: 100%;
+    }
+    .login.bg > div .sidebar-wrapper{
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+  }
+  
