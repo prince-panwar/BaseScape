@@ -6,16 +6,38 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+model User {
+  id        BigInt        @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  username  String        @db.Text
+  
+}
 
 model tbl_deposit {
-  id       BigInt @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
-  username String @db.Text
+  id       BigInt   @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
   amount   Float
-  claim    Int
+  claim    Boolean @db.TinyInt
+  address  String   @db.VarChar(42)
+  userId   BigInt  
+ 
 }
+
+model tbl_Stake {
+  id       BigInt   @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  amount   Float
+  claim    Boolean @db.TinyInt
+  address  String  @db.VarChar(42)
+  userId   BigInt   
+  startDate  String @db.Text    // Unix timestamp for the start date 
+  duration   String  @db.Text    // Unix timestamp for the start date
+  endDate    String @db.Text   // Unix timestamp for the end date
+  
+}
+
+
+
 model Vote {
-  id         BigInt  @id @default(autoincrement()) @db.UnsignedBigInt
-  userId     String  @db.Text
-  candidate  String  @db.Text
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  userId     BigInt   // Changed from String to BigInt to match User's id type
+  candidate  String   @db.Text
   createdAt  DateTime @default(now())
 }

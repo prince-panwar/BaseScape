@@ -22,7 +22,7 @@ export default async function handle(
             return res.status(400).json({ error: "Username is required" });
         }
         console.log(usernameString);
-        const result = await prisma.tbl_deposit.findMany({
+        const result = await prisma.user.findMany({
             where: {
                 username: {
                     equals: usernameString,

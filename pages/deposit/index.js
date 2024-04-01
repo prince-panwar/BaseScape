@@ -17,7 +17,8 @@ import { parseEther, erc20Abi, formatEther } from "viem";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/navigation";
 const Deposit = () => {
-  const { username } = useUserContext();
+  const { username ,id} = useUserContext();
+  console.log("at deposit "+username+" "+id);
   const [amount, setAmount] = useState();
  const Router = useRouter();
   const TOKEN_ADDRESS="0x6C6e2C5a4EB108A1F3c985d5A7F4f233483e952F";

@@ -1,4 +1,3 @@
-//create nextjs api routes for deposit with prisma
 import prisma from "../../utils/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -7,22 +6,28 @@ export default async function handle(
   res: NextApiResponse
 ) {
   try {
-    const { amount, id , address } = req.body;
-    console.log("amount on server", amount);
+    const { amount,  address,id , start,duration,end } = req.body;
+    console.log("depsoit amount on server", amount);
 
-    const result = await prisma.tbl_deposit.create({
+    // Find the user by ID and update their deposit amount
+    const result = await prisma.tbl_Stake.create({
+      
       data: {
         amount: amount,
         address:address,
         claim: false,
         userId:id,
+        startDate:start,
+        duration:duration,
+        endDate:end
+        // You can add other fields to update here
       },
     });
+
     res.status(200).json({
       id: result.id.toString(),
       amount: result.amount,
-      username: result.address,
-      claim: result.claim,
+      // Include any other fields that you updated
     });
   } catch (error) {
     console.log(error);

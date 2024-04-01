@@ -3,116 +3,120 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract FixedStaking is ReentrancyGuard {
-    IERC20 public stakingToken;
+    using SafeERC20 for IERC20;
 
-    // Struct to store staking details
-    struct StakingInfo {
-        address staker;
+    IERC20 public stakingToken;
+    address public owner;
+
+    struct Stake {
         uint256 amount;
-        uint256 duration; // in seconds
+        uint256 duration;
         uint256 startTime;
-        uint256 apy; // Annual Percentage Yield (in basis points, e.g., 5000 for 50%)
+        uint256 apy;
         bool isWithdrawn;
     }
 
-    // Available staking durations (in seconds)
+    mapping(address => Stake[]) public userStakes;
+    mapping(uint256 => uint256) public durationToAPY;
     uint256[] public stakingDurations = [7 days, 14 days, 21 days, 30 days, 60 days];
-
-    // Constants for APY and withdrawal tax
-   
-    uint256 public constant WITHDRAWAL_TAX_PERCENT = 1; // 4% withdrawal tax
-
-    // Total amount staked
+    uint256 public constant WITHDRAWAL_TAX_PERCENT = 1;
+    uint256 public constant EARLY_WITHDRAWAL_TAX_PERCENT = 4;
     uint256 public totalStaked;
 
-    // Mapping from staker address to their staking info
-    mapping(address => StakingInfo) public stakingData;
-
-    // Mapping from duration to APY
-    mapping(uint256 => uint256) public durationToAPY;
-
-    // Event emitted when a user stakes tokens
     event Staked(address indexed staker, uint256 amount, uint256 duration);
-
-    // Event emitted when a user withdraws staked tokens
     event Withdrawn(address indexed staker, uint256 amount);
 
     constructor(address _token) {
         stakingToken = IERC20(_token);
-
-        // Initialize the mapping with your specific APY values for each duration
         durationToAPY[7 days] = 4100; // 41% APY
         durationToAPY[14 days] = 4200; // 42% APY
         durationToAPY[21 days] = 4300; // 43% APY
         durationToAPY[30 days] = 4400; // 44% APY
         durationToAPY[60 days] = 4500; // 45% APY
+        owner = msg.sender;
     }
 
-    // Stake tokens with user-selectable duration
-    function stakeTokens(uint256 _selectedDurationIndex, uint256 _amount) external {
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
+
+    function stakeTokens(uint256 _selectedDurationIndex, uint256 _amount) external nonReentrant {
         require(_selectedDurationIndex < stakingDurations.length, "Invalid duration index");
         require(stakingToken.balanceOf(msg.sender) >= _amount, "Insufficient Balance");
-        StakingInfo storage existingStake = stakingData[msg.sender];
-        require(existingStake.isWithdrawn || existingStake.amount == 0, "You have already staked tokens and not yet withdrawn them");
         uint256 selectedDuration = stakingDurations[_selectedDurationIndex];
-        uint256 APY= durationToAPY[selectedDuration];
+        uint256 APY = durationToAPY[selectedDuration];
 
-        stakingData[msg.sender] = StakingInfo({
-            staker: msg.sender,
+        userStakes[msg.sender].push(Stake({
             amount: _amount,
             duration: selectedDuration,
             startTime: block.timestamp,
             apy: APY,
             isWithdrawn: false
-        });
+        }));
 
         totalStaked += _amount;
-       
-        bool TransferSuccess = stakingToken.transferFrom(msg.sender, address(this), _amount);
-        require(TransferSuccess, "Transfer Failed");
+
+        stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
 
         emit Staked(msg.sender, _amount, selectedDuration);
     }
 
+    function withdrawTokens(uint256 _stakeIndex) external nonReentrant returns (uint256){
+        require(_stakeIndex < userStakes[msg.sender].length, "Invalid stake index");
+        Stake storage stake = userStakes[msg.sender][_stakeIndex];
+        require(!stake.isWithdrawn, "Tokens already withdrawn");
 
+        uint256 RewardAmount = calculateReward(stake);
+        uint256 finalAmount = stake.amount+RewardAmount;
+        stake.isWithdrawn = true;
+        totalStaked -= finalAmount;
 
+        stakingToken.safeTransfer(msg.sender, finalAmount);
 
-
-
-    // Withdraw staked tokens after the staking period
-   function withdrawTokens() external {
-    
-    StakingInfo storage stakingInfo = stakingData[msg.sender];
-    require(!stakingInfo.isWithdrawn, "Tokens already withdrawn");
-    require(block.timestamp >= stakingInfo.startTime + stakingInfo.duration, "Staking period not over");
-
-    
-    // Calculate yield
-    uint256 yield = (stakingInfo.amount * stakingInfo.apy * stakingInfo.duration) / (365 days * 10000);
-
-    // Apply the withdrawal tax
-    uint256 withdrawalTax = (yield * WITHDRAWAL_TAX_PERCENT) / 100;
-    uint256 finalAmount = stakingInfo.amount + yield - withdrawalTax;
-
-    // Mark as withdrawn
-    stakingInfo.isWithdrawn = true;
-   //update total staked amount
-    if(finalAmount>totalStaked){
-        totalStaked=0;
-    }else{
-    totalStaked-=finalAmount;
+        emit Withdrawn(msg.sender, finalAmount);
+        return finalAmount;
     }
-    // Transfer tokens to the staker
-    bool success = stakingToken.transfer(msg.sender, finalAmount);
-    require(success, "Transfer Failed");
 
-    emit Withdrawn(msg.sender, finalAmount);
-  }
+    function calculateReward(Stake storage _stake) internal view returns (uint256) {
+        uint256 elapsedTime = block.timestamp - _stake.startTime;
+        uint256 withdrawalTax;
+        
+        if (elapsedTime >= _stake.duration) {
+            // Calculate reward based on the pool duration
+            uint256 yield = (_stake.amount * _stake.apy * (_stake.duration / 86400)) / (365 days * 10000);
+            withdrawalTax = (yield * WITHDRAWAL_TAX_PERCENT) / 100;
+            return yield - withdrawalTax;
+        } else {
+            // Calculate reward based on the number of days staked
+            uint256 partialYield = (_stake.amount * _stake.apy * (elapsedTime/86400)) / (365 days * 10000);
+            withdrawalTax = (partialYield * EARLY_WITHDRAWAL_TAX_PERCENT) / 100;
+            return partialYield - withdrawalTax;
+        }
+    }
+    
+    function calculateRewardForStake(address _user, uint256 _stakeIndex) external view returns (uint256) {
+        require(_stakeIndex < userStakes[_user].length, "Invalid stake index");
+        Stake storage stake = userStakes[_user][_stakeIndex];
+        return calculateReward(stake);
+    }
+  
+   
 
-  function getTVL() external view returns (uint256) {
-    return stakingToken.balanceOf(address(this));
-  }
+    function getStakes(address _user) external view returns (Stake[] memory) {
+        return userStakes[_user];
+    }
 
+    function updateAPY(uint256 _duration, uint256 _newAPY) external onlyOwner {
+        require(_newAPY > 0, "Invalid APY");
+        durationToAPY[_duration] = _newAPY;
+    }
+
+
+    function getTVL() external view returns (uint256) {
+        return stakingToken.balanceOf(address(this));
+    }
 }
