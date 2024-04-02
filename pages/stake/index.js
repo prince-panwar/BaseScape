@@ -4,8 +4,6 @@ import CustomInput from "../components/input";
 import Button from "../components/button";
 import contractabi from "../helpers/FixedStaking.json";
 import tokenabi from "../helpers/TestToken.json";
-import styles from "./stake.module.css";
-
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   useAccount,
@@ -43,7 +41,7 @@ const Stake = () => {
   }
   useEffect(() => {  getStakes().then((d) => setStakesdata(d));}, []);
  //console.log(stakesdata);
-  const CONTRACT_ADDRESS = "0x32280bD61E1e326ca884d45c9EC599E17291852C";
+  const CONTRACT_ADDRESS = "0xD3b55f5fcE16f66EA908303055D7b02b537829E7";
   const TOKEN_ADDRESS = "0x2a4c6394886502942d4Dd3d0Fd5E0B6245136f0d";
 
   const {
@@ -105,7 +103,7 @@ const Stake = () => {
          abi:ABI,
          address: CONTRACT_ADDRESS,
          functionName: "withdrawTokens",
-         args: [address , id],
+         args: [id],
        });
      
    }
@@ -178,41 +176,52 @@ async function updateDB(stakeId) {
 
 
 
-  const { data: balance, error: readerror } = useReadContract({
+  const { data: balance, error: readerror, refetch:refetchTVL } = useReadContract({
     abi: ABI,
     address: CONTRACT_ADDRESS,
     functionName: "getTVL",
     args: [],
   });
-  const { data: userbalance, error: userreaderror } = useReadContract({
+  const { data: userbalance, error: userreaderror, refetch:refetchUserBalance } = useReadContract({
     abi: TOKEN_ABI,
     address: TOKEN_ADDRESS,
     functionName: "balanceOf",
     args: [address],
   });
-  const { data: stakes, error: stakereadError } = useReadContract({
+  const { data: stakes, error: stakereadError ,refetch:refetchStakes} = useReadContract({
     abi: ABI,
     address: CONTRACT_ADDRESS,
     functionName: "getStakes",
     args: [address],
   });
-  console.log(stakes);
+  
+  useEffect(() => {
+    // Call the functions to refetch data from the contracts
+    console.log("refetching data");
+    refetchTVL();
+    refetchStakes();
+    refetchUserBalance();
+  }, [isStakeConfirmed]); 
+
+  // console.log(stakes);
 
   console.log(stakereadError);
   
-    // const { data: Reward, error: rewardreadError } = useReadContract({
-    //   abi: ABI,
-    //   address: CONTRACT_ADDRESS,
-    //   functionName: "calculateRewardForStake",
-    //   args: [address,stakeid],
-    // });
-    
+    const { data: Reward, error: rewardreadError } = useReadContract({
+      abi: ABI,
+      address: CONTRACT_ADDRESS,
+      functionName: "calculateRewardsForUser",
+      args: [address],
+    });
+    // console.log("reward");
+    // console.log(Reward);
   
 
     function convertTimestampToDate(timestamp) {
       // Create a new Date object using the timestamp multiplied by 1000
       // because JavaScript uses milliseconds and Solidity uses seconds for timestamps
-      console.log("date "+ timestamp);
+      // console.log("time "+timestamp);
+      
       const date = new Date(Number(timestamp) * 1000);
     
       // Extract the year, month, and day using the appropriate methods
@@ -236,8 +245,8 @@ async function updateDB(stakeId) {
   // console.log("stake confirmed "+isStakeConfirmed)
   // console.log(userreaderror)
   // console.log(userbalance)
-   console.log(WithdrawError);
-   console.log("pending "+Pending);
+   //console.log(WithdrawError);
+   //console.log("pending "+Pending);
   useEffect(() => {
     if (stakeError) {
       alert(stakeError.message);
@@ -317,24 +326,13 @@ async function updateDB(stakeId) {
                   <tr key={index}>
                     <td>{Number(stake.duration)/86400}D</td>
                     <td>{Number(stake.amount)/10**18}</td>
-                    <td>{0.0}</td>
-                    <td>{convertTimestampToDate(stake.endDate)}</td>
+                     {!!Reward[index] && typeof Reward[index] === "bigint" && (<td>{formatEther(Reward[index])}</td>)}
+                    <td>{ convertTimestampToDate(stake.startTime+stake.duration)}</td>
                     <td>{stake.isWithdrawn ? "Reedemed" : "Staking"}</td>
                     <td><button onClick={()=>{if(!stake.isWithdrawn){handleWithdraw(index)}}} className="yellow-btn">{!stake.isWithdrawn?"Redeem Now":"Reedemed"}</button></td>
                   </tr>
                 ))}
-
-                
-              {/* // <tr>
-              //   <td>7D</td>
-              //   <td>150</td>
-              //   <td>0.001</td>
-              //   <td>23-4-2-24</td>
-              //   <td>Staking</td>
-              //   <td><button className="yellow-btn">Redeem Now</button></td>
-              // </tr> */}
-             
-            </tbody>
+             </tbody>
           </table>
         </div>
       </div>
