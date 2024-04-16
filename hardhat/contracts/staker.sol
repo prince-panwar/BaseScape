@@ -31,11 +31,11 @@ contract FixedStaking is ReentrancyGuard {
 
     constructor(address _token) {
         stakingToken = IERC20(_token);
-        durationToAPY[7 days] = 4100; // 41% APY
-        durationToAPY[14 days] = 4200; // 42% APY
-        durationToAPY[21 days] = 4300; // 43% APY
-        durationToAPY[30 days] = 4400; // 44% APY
-        durationToAPY[60 days] = 4500; // 45% APY
+        durationToAPY[7 days] = 1200; 
+        durationToAPY[14 days] = 2600; 
+        durationToAPY[21 days] = 5800; 
+        durationToAPY[30 days] = 8000; 
+        durationToAPY[60 days] = 12000; 
         owner = msg.sender;
     }
 
@@ -81,36 +81,38 @@ contract FixedStaking is ReentrancyGuard {
         return finalAmount;
     }
 
-function calculateReward(Stake storage _stake) internal view returns (uint256) {
-    uint256 elapsedTime = block.timestamp - _stake.startTime;
-    uint256 withdrawalTax;
-    uint256 scalingFactor = 1e18; // Define a scaling factor for precision
-
-    if (elapsedTime >= _stake.duration) {
-        // Calculate reward based on the pool duration
-        uint256 yield = (_stake.amount * _stake.apy * _stake.duration * scalingFactor) / (86400 * 365 days * 10000);
-        withdrawalTax = (yield * WITHDRAWAL_TAX_PERCENT) / (100 * scalingFactor);
-        return (yield - withdrawalTax) / scalingFactor;
-    } else {
-        // Calculate reward based on the number of days staked
-        uint256 partialYield = (_stake.amount * _stake.apy * elapsedTime * scalingFactor) / (86400 * 365 days * 10000);
-        withdrawalTax = (partialYield * EARLY_WITHDRAWAL_TAX_PERCENT) / (100 * scalingFactor);
-        return (partialYield - withdrawalTax) / scalingFactor;
-    }
-}
-
-    
-   function calculateRewardsForUser(address _user) external view returns (uint256[] memory) {
-        Stake[] storage stakes = userStakes[_user];
-        uint256[] memory rewards = new uint256[](stakes.length);
-
-        for (uint256 i = 0; i < stakes.length; i++) {
-            rewards[i] = calculateReward(stakes[i]);
+    function calculateReward(Stake storage _stake) internal view returns (uint256) {
+        uint256 elapsedTime = block.timestamp - _stake.startTime;
+        uint256 withdrawalTax;
+        
+        if (elapsedTime >= _stake.duration) {
+            // Calculate reward based on the pool duration
+            uint256 yield = (_stake.amount * _stake.apy * (_stake.duration / 86400)) / (365 days * 10000);
+            withdrawalTax = (yield * WITHDRAWAL_TAX_PERCENT) / 100;
+            return yield - withdrawalTax;
+        } else {
+            // Calculate reward based on the number of days staked
+            uint256 partialYield = (_stake.amount * _stake.apy * (elapsedTime/86400)) / (365 days * 10000);
+            withdrawalTax = (partialYield * EARLY_WITHDRAWAL_TAX_PERCENT) / 100;
+            return partialYield - withdrawalTax;
         }
-
-        return rewards;
     }
-  
+    
+    function calculateRewardForStake(address _user, uint256 _stakeIndex) external view returns (uint256) {
+        require(_stakeIndex < userStakes[_user].length, "Invalid stake index");
+        Stake storage stake = userStakes[_user][_stakeIndex];
+        return calculateReward(stake);
+    }
+    function calculateTotalRewardForStake(address _user, uint256 _stakeIndex) external view returns (uint256) {
+        uint256 withdrawalTax;
+        require(_stakeIndex < userStakes[_user].length, "Invalid stake index");
+        
+        Stake storage stake = userStakes[_user][_stakeIndex];
+        uint256 yield = (stake.amount * stake.apy * (stake.duration / 86400)) / (365 days * 10000);
+        withdrawalTax = (yield * WITHDRAWAL_TAX_PERCENT) / 100;
+        return yield - withdrawalTax;
+        
+    }
    
 
     function getStakes(address _user) external view returns (Stake[] memory) {
@@ -121,7 +123,6 @@ function calculateReward(Stake storage _stake) internal view returns (uint256) {
         require(_newAPY > 0, "Invalid APY");
         durationToAPY[_duration] = _newAPY;
     }
-
 
     function getTVL() external view returns (uint256) {
         return stakingToken.balanceOf(address(this));

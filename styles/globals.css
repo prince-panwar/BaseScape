@@ -214,7 +214,7 @@ a:hover {
 }
 
 .bg {
-  background-image: url("../public/Images/svg/backgroundImg.svg");
+  background-image: url("/Images/svg/backgroundImg.svg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -368,7 +368,7 @@ a:hover {
 
 @media only screen and (max-width: 1199px) {
   .bg {
-    background-image: url("../public/Images/svg/Mobile_Bg.png");
+    background-image: url("/Images/svg/Mobile_Bg.png");
   }
   .sidebar-wrapper .dropdown .dropdown-btn {
     background-image: linear-gradient(
