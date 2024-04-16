@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id        BigInt        @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  username  String        @db.Text
+  
+}
+
+model tbl_deposit {
+  id       BigInt   @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  amount   Float
+  claim    Boolean @db.TinyInt
+  address  String   @db.VarChar(42)
+  userId   BigInt  
+ 
+}
+
+model tbl_Stake {
+  id       BigInt   @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  amount   Float
+  claim    Boolean @db.TinyInt
+  address  String  @db.VarChar(42)
+  userId   BigInt   
+  startDate  String @db.Text    // Unix timestamp for the start date 
+  duration   String  @db.Text    // Unix timestamp for the start date
+  endDate    String @db.Text   // Unix timestamp for the end date
+  
+}
+
+
+

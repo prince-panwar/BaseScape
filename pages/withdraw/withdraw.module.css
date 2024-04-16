@@ -1,0 +1,107 @@
+.withdraw-page {
+  padding-top: 5%;
+  height: 100vh;
+  overflow: auto;
+}
+.withdraw-page > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  height: 386px;
+}
+.withdraw-page .black-card-wrapper {
+  border: 1px solid;
+  border-image: linear-gradient(
+      to bottom,
+      rgba(237, 230, 216, 1),
+      rgba(8, 8, 8, 1),
+      rgba(237, 230, 216, 1)
+    )
+    1;
+  box-shadow: 0px 0px 10px 0px rgba(73, 82, 14, 1) inset;
+  background-color: #0b0c07;
+  padding: 20px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  justify-content: center;
+}
+.withdraw-page .black-card-wrapper > div {
+  display: flex;
+  justify-content: center;
+}
+.withdraw-page .black-card-wrapper > div .dropdown{
+  width: 100%;
+}
+.withdraw-page .black-card-wrapper > div p {
+  color: #f4ffb0;
+  font-size: 17px;
+  font-family: "Inter", sans-serif;
+}
+.withdraw-page > div .sidebar-wrapper {
+  margin-right: 80px;
+}
+
+.withdraw-page .table-wrapper {
+  background: rgba(11, 12, 7, 1);
+  height: 100%;
+  margin-left: 30px;
+  padding: 17px 0;
+  width: 410px;
+  overflow: auto;
+  box-shadow: 0px 0px 10px 0px rgba(73, 82, 14, 1) inset;
+}
+.withdraw-page .table-wrapper table {
+  width: 100%;
+}
+.withdraw-page .table-wrapper table thead {
+  border-bottom: 1px solid rgb(244 255 176 / 10%);
+}
+.withdraw-page .table-wrapper table thead th {
+  color: rgb(244 255 176 / 50%);
+  font-size: 16px;
+  padding-bottom: 11px;
+  font-family: "Inter", sans-serif;
+  text-align: center;
+  width: 33.33%;
+}
+.withdraw-page .table-wrapper table tbody td {
+  padding: 10px;
+  color: rgb(244 255 176 / 80%);
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  text-align: center;
+}
+.withdraw-page .table-wrapper table tbody tr:first-child td {
+  padding-top: 27px;
+}
+.withdraw-page .table-wrapper table tbody tr:last-child td {
+  padding-bottom: 33px;
+}
+
+@media only screen and (max-width: 1199px) {
+  .withdraw-page > div .sidebar-wrapper {
+    margin-right: 0;
+  }
+  .withdraw-page > div {
+    height: auto;
+    gap: 20px;
+    padding: 20px;
+  }
+  .withdraw-page .black-card-wrapper {
+    padding: 40px;
+  }
+  .withdraw-page .table-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+  .withdraw-page .black-card-wrapper {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1199px) {
+
+}
