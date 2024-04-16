@@ -300,11 +300,13 @@ const Stake = () => {
             </div>
             <div>
               <span>Balance</span>
-            {!!userbalance && typeof userbalance === "bigint" && (
+            {!!userbalance && typeof userbalance === "bigint" ? (
             <span>
              {formatEther(userbalance).slice(0,6)} $scape
             </span>
-          )}
+          ):(<span>
+            0.0  $scape
+           </span>)}
             </div>
             <div>
               <span className="tvl">TVL</span>
