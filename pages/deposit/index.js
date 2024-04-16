@@ -90,11 +90,11 @@ useEffect(() => {if(depositError){alert(depositError.message)}},[depositError])
           <div className="detail">
           <div>
         <p>Balance</p>
-            {!!userbalance && typeof userbalance === 'bigint' ?( <span style={{color:"white",fontFamily:"Inter" ,fontSize:"17px"}}>{formatEther(userbalance)+" $scape"}</span> ):(<span style={{color:"white",fontFamily:"Inter" ,fontSize:"17px"}}>{0.0+" $scape"}</span>)}
+            {!!userbalance && typeof userbalance === 'bigint' ?( <span style={{color:"#f4ffb0",fontFamily:"Inter" ,fontSize:"17px"}}>{formatEther(userbalance)+" $scape"}</span> ):(<span style={{color:"#f4ffb0",fontFamily:"Inter" ,fontSize:"17px"}}>{0.0+" $scape"}</span>)}
           </div>
           <div>
         <p>Locked Tokens</p>
-            {!!balance && typeof balance === 'bigint' ? ( <span style={{color:"white",fontFamily:"Inter" ,fontSize:"17px"}}>{formatEther(userbalance)}</span> ):(<span style={{color:"white",fontFamily:"Inter" ,fontSize:"17px"}}>{0.0+" $scape"}</span>)}
+            {!!balance && typeof balance === 'bigint' ? ( <span style={{color:"#f4ffb0",fontFamily:"Inter" ,fontSize:"17px"}}>{formatEther(userbalance)}</span> ):(<span style={{color:"#f4ffb0",fontFamily:"Inter" ,fontSize:"17px"}}>{0.0+" $scape"}</span>)}
           </div>
           </div>
           <CustomInput
