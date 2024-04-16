@@ -38,7 +38,7 @@ const Stake = () => {
     }
   }, [username]);
 
-  const CONTRACT_ADDRESS = "0xD3b55f5fcE16f66EA908303055D7b02b537829E7";
+  const CONTRACT_ADDRESS = "0xA2b7C26E723EB990ce1c2c2070F029D169e6F548";
   const TOKEN_ADDRESS = "0x2a4c6394886502942d4Dd3d0Fd5E0B6245136f0d";
 
   const { writeContract: writeApprove, data: approveHash, isPending: approvPending, isError: approveWalletError } = useWriteContract({ onError: (e) => console.log("inside approve" + e.message) });
