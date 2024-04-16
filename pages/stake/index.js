@@ -213,11 +213,13 @@ const Stake = () => {
     refetchTVL();
     refetchStakes();
     refetchUserBalance();
-  }, [isStakeConfirmed]);
+    refetchRewards();
+    
+  }, [isStakeConfirmed,isConfirmed]);
 
-  console.log(stakereadError);
+ 
 
-  const { data: Reward, error: rewardreadError } = useReadContract({
+  const { data: Reward, isError:readRewardError, refetch:refetchRewards} = useReadContract({
     abi: ABI,
     address: CONTRACT_ADDRESS,
     functionName: "calculateRewardsForUser",
@@ -257,7 +259,8 @@ const Stake = () => {
     boxShadow: 24,
     background: "#0B0C07",
   };
-
+  console.log("reward error "+readRewardError)
+ console.log(Reward);
   return (
     <div className="stake-page bg">
       <div>
@@ -333,9 +336,15 @@ const Stake = () => {
                   <tr key={index}>
                     <td>{Number(stake.duration) / 86400}D</td>
                     <td>{Number(stake.amount) / 10 ** 18}</td>
-                    {!!Reward[index] && typeof Reward[index] === "bigint" && (
-                      <td>{formatEther(Reward[index])}</td>
-                    )}
+                    {!!Reward[index] && typeof Reward[index] === "bigint" ? (
+                        <td>{formatEther(Reward[index])}</td>
+                      ) : (
+                        <td>{new Intl.NumberFormat('en-US', {
+                          minimumFractionDigits: 18,
+                          maximumFractionDigits: 18
+                        }).format(0)}</td>
+                      )}
+
                     <td>{convertTimestampToDate(stake.startTime + stake.duration)}</td>
                     <td>
                     {isEarlyWithdrawal(stake.startTime + stake.duration)
