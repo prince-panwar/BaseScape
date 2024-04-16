@@ -274,13 +274,7 @@ const Stake = () => {
             }}
             placeholder="Enter amount to stake"
           />
-          {!!userbalance && typeof userbalance === "bigint" && (
-            <span
-              style={{ color: "rgba(245, 241, 5)", fontFamily: "sans-serif" }}
-            >
-              Balance {formatEther(userbalance)} $scape
-            </span>
-          )}
+         
           <div className="detail">
             <div>
               <span>Days</span>
@@ -303,6 +297,14 @@ const Stake = () => {
             <div>
               <span>Withdraw Tax</span>
               <span>1%</span>
+            </div>
+            <div>
+              <span>Balance</span>
+            {!!userbalance && typeof userbalance === "bigint" && (
+            <span>
+             {formatEther(userbalance).slice(0,6)} $scape
+            </span>
+          )}
             </div>
             <div>
               <span className="tvl">TVL</span>

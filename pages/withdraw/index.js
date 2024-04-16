@@ -6,6 +6,7 @@ import Button from "../components/button";
 import styles from "./withdraw.module.css";
 import Dropdown from "../components/dropdown";
 import contractabi from "../helpers/FixedStaking.json";
+import tokenabi from "../helpers/Etherscape.json";
 import {
   useAccount,
   useSendTransaction,
@@ -17,7 +18,18 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useUserContext } from "../../context/userContext";
 import { useRouter } from "next/navigation";
 const Withdraw = () => {
-  // const CONTRACT_ADDRESS = "0x6bE10596970838b5f42695ecf869013d6D52DCA6";
+  const { address, isConnected } = useAccount();
+  const TOKEN_ADDRESS="0x6C6e2C5a4EB108A1F3c985d5A7F4f233483e952F";
+  const {
+    data: userbalance,
+    error: userreaderror,
+    refetch: refetchUserBalance,
+  } = useReadContract({
+    abi: tokenabi,
+    address: TOKEN_ADDRESS,
+    functionName: "balanceOf",
+    args: [address],
+  });
   // const ABI = contractabi.abi;
   // const {
   //   writeContract: writewithdraw,
@@ -65,6 +77,8 @@ const Withdraw = () => {
             // onChange={handleChange}
             placeholder="Enter amount to withdraw"
           />
+          
+          
           <Button  className="yellow-btn">
             Withdraw
           </Button>

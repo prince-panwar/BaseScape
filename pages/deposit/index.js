@@ -4,6 +4,7 @@ import CustomInput from "../components/input";
 import Button from "../components/button";
 import styles from "./deposit.module.css";
 import tokenabi from "../helpers/Etherscape.json";
+
 import { useUserContext } from "../../context/userContext";
 import {
   useAccount,
@@ -17,6 +18,7 @@ import { parseEther, erc20Abi, formatEther } from "viem";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/navigation";
 const Deposit = () => {
+  const { address, isConnected } = useAccount();
   const { username ,id} = useUserContext();
   console.log("at deposit "+username+" "+id);
   const [amount, setAmount] = useState();
@@ -31,6 +33,16 @@ const Deposit = () => {
     address: TOKEN_ADDRESS,
     functionName: "balanceOf",
     args: [RECIPIENT_ADDRESS],
+  });
+  const {
+    data: userbalance,
+    error: userreaderror,
+    refetch: refetchUserBalance,
+  } = useReadContract({
+    abi: tokenabi,
+    address: TOKEN_ADDRESS,
+    functionName: "balanceOf",
+    args: [address],
   });
 
   const {writeContract:writeDeposit,data:depositHash, isPending:depositPending,error:depositError} = useWriteContract();
@@ -67,16 +79,23 @@ useEffect(() => {if(depositError){alert(depositError.message)}},[depositError])
     });
 
   }
- 
+  console.log(balance);
+  console.log(userbalance);
   return (
     <div className="deposit-page bg">
       <div>
         <Sidebar  />
         <div className="black-card-wrapper">
           <ConnectButton/>
+          <div className="detail">
           <div>
-            <p>Locked Tokens</p>
-            {!!balance && typeof balance === 'bigint' && ( <span>{formatEther(balance)}</span>  )}
+        <p>Balance</p>
+            {!!userbalance && typeof userbalance === 'bigint' ?( <span>{formatEther(userbalance)+" $scape"}</span> ):(<span>{0+" $scape"}</span>)}
+          </div>
+          <div>
+        <p>Locked Tokens</p>
+            {!!balance && typeof balance === 'bigint' ? ( <span>{formatEther(userbalance)}</span> ):(<span>{0+" $scape"}</span>)}
+          </div>
           </div>
           <CustomInput
              value={amount}

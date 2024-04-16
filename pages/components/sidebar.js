@@ -30,9 +30,7 @@ const Sidebar = () => {
       case "/stake":
         setActiveItem("Stake");
         break;
-      case "/vote":
-        setActiveItem("Vote");
-        break;
+    
       default:
         setActiveItem("Deposit");
     }
@@ -101,22 +99,17 @@ const Sidebar = () => {
                   <span onClick={() => setMenu(false)}>Deposit</span>
                 </Link>
               </div>
-              <div className={activeItem === "Withdraw" ? "active" : ""}>
-                <Link href={`/withdraw`}>
-                  <span onClick={() => setMenu(false)}>Withdraw</span>
-                </Link>
-              </div>
               <div className={activeItem === "Stake" ? "active" : ""}>
                 <Link href={`/stake`}>
                   <span onClick={() => setMenu(false)}>Stake</span>
                 </Link>
               </div>
-              <div className={activeItem === "Vote" ? "active" : ""}>
-                <Link href={`/vote`}>
-                  <span onClick={() => setMenu(false)}>Vote</span>
+              <div className={activeItem === "Withdraw" ? "active" : ""}>
+                <Link href={`/withdraw`}>
+                  <span onClick={() => setMenu(false)}>Withdraw</span>
                 </Link>
               </div>
-            </div>
+           </div>
           </div>
         </div>
       ) : (
@@ -124,15 +117,13 @@ const Sidebar = () => {
           <li className={activeItem === "Deposit" ? "active" : ""}>
             <Link href="/deposit"><span>Deposit</span></Link>
           </li>
-          <li className={activeItem === "Withdraw" ? "active" : ""}>
-            <Link href="/withdraw"><span>Withdraw</span></Link>
-          </li>
           <li className={activeItem === "Stake" ? "active" : ""}>
             <Link href="/stake"><span>Stake</span></Link>
           </li>
-          <li className={activeItem === "Vote" ? "active" : ""}>
-            <Link href="/vote"><span>Vote</span></Link>
+          <li className={activeItem === "Withdraw" ? "active" : ""}>
+            <Link href="/withdraw"><span>Withdraw</span></Link>
           </li>
+        
         </ul>
       )}
     </div>
