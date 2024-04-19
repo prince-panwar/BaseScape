@@ -79,7 +79,7 @@ const Withdraw = () => {
           />
           
           
-          <Button  className="yellow-btn">
+          <Button  className="yellow-btn disabled">
             Withdraw
           </Button>
         </div>
