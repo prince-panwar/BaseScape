@@ -15,14 +15,7 @@ export default async function handle(
 ) {
   try {
     const { id } = req.body;
-    const result = await prisma.tbl_deposit.findMany({
-      where:{
-        userId :{
-          equals:id,
-        },
-      }
-    }
-    );
+    const result = await prisma.tbl_deposit.findMany({});
     res.status(200).send(json(result));
   } catch (error) {
     console.log(error);

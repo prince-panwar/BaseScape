@@ -413,6 +413,7 @@ const Stake = () => {
             </div>
           </Box>
         </Modal>
+        <button onClick={saveInDB}>save</button>
       </div>
     </div>
   );

@@ -7,11 +7,12 @@ export default async function handle(
   res: NextApiResponse
 ) {
   try {
-    const { amount, id , address } = req.body;
+    const { amount, id , address ,username} = req.body;
     console.log("amount on server", amount);
 
     const result = await prisma.tbl_deposit.create({
       data: {
+        username:username,
         amount: amount,
         address:address,
         claim: false,

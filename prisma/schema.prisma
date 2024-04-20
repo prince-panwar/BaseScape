@@ -14,6 +14,7 @@ model User {
 
 model tbl_deposit {
   id       BigInt   @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  username  String        @db.Text
   amount   Float
   claim    Boolean @db.TinyInt
   address  String   @db.VarChar(42)
