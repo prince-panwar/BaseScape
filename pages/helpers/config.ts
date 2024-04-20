@@ -1,7 +1,7 @@
 import { http, createConfig } from 'wagmi'
 import { mainnet, sepolia } from 'wagmi/chains'
 
-export const txconfig = createConfig({
+export const txnconfig = createConfig({
   chains: [mainnet, sepolia],
   transports: {
     [mainnet.id]: http("https://eth-mainnet.g.alchemy.com/v2/yFrQtMFF9AoM9EaMb3R-LKhx3Qe9OceL"),
