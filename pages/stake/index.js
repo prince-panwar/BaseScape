@@ -417,7 +417,6 @@ console.log(address);
             </div>
           </Box>
         </Modal>
-       <button onClick={handleStake}>stake</button>
       </div>
     </div>
   );
