@@ -4,6 +4,7 @@ import CustomInput from "../components/input";
 import Button from "../components/button";
 import styles from "./deposit.module.css";
 import tokenabi from "../helpers/Etherscape.json";
+import { txnconfig } from "../helpers/config";
 
 import { useUserContext } from "../../context/userContext";
 import {
@@ -46,8 +47,7 @@ const Deposit = () => {
   });
 
   const { writeContract: writeDeposit, data: depositHash, isPending: depositPending, error: depositError } = useWriteContract();
-  const { isLoading: isDepositConfirming, isSuccess: isDepositConfirmed, status } = useWaitForTransactionReceipt({ hash: depositHash, chainId: sepolia.id, pollingInterval: 1_000 });
-
+  const { isLoading: isDepositConfirming, isSuccess: isDepositConfirmed, status } = useWaitForTransactionReceipt({ hash: depositHash, config:txnconfig});
   useEffect(() => {
     if (!username) {
       Router.push("./");

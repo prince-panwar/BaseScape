@@ -5,6 +5,7 @@ import Button from "../components/button";
 import contractabi from "../helpers/FixedStaking.json";
 import tokenabi from "../helpers/TestToken.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { txnconfig } from "../helpers/config";
 import {
   useAccount,
   useSendTransaction,
@@ -44,11 +45,11 @@ const Stake = () => {
   const { writeContract: writeApprove, data: approveHash, isPending: approvPending, isError: approveWalletError } = useWriteContract({ onError: (e) => console.log("inside approve" + e.message) });
   const { writeContract: writeStake, data: stakeHash, isPending: stakePending, isError: stakeWalletError } = useWriteContract();
 
-  const { isLoading: isApproveConfirming, isSuccess: isApproveConfirmed, error: approveError } = useWaitForTransactionReceipt({ hash: approveHash });
-  const { isLoading: isStakeConfirming, isSuccess: isStakeConfirmed, error: stakeError } = useWaitForTransactionReceipt({ hash: stakeHash });
+  const { isLoading: isApproveConfirming, isSuccess: isApproveConfirmed, error: approveError } = useWaitForTransactionReceipt({ hash: approveHash ,config:txnconfig });
+  const { isLoading: isStakeConfirming, isSuccess: isStakeConfirmed, error: stakeError } = useWaitForTransactionReceipt({ hash: stakeHash, config:txnconfig });
 
   const { writeContract: writewithdraw, data: Hash, isPending: Pending, isError: WithdrawWalletError } = useWriteContract({ onError: (e) => console.log("inside withdraw" + e.message) });
-  const { isLoading: isConfirming, isSuccess: isConfirmed, error: WithdrawError } = useWaitForTransactionReceipt({ hash: Hash });
+  const { isLoading: isConfirming, isSuccess: isConfirmed, error: WithdrawError } = useWaitForTransactionReceipt({ hash: Hash,config:txnconfig });
 
   const APY = [12, 26, 58, 80, 120];
   const Duration = [7, 14, 21, 30, 60];
@@ -259,8 +260,9 @@ const Stake = () => {
     boxShadow: 24,
     background: "#0B0C07",
   };
-  console.log("reward error "+readRewardError)
- console.log(Reward);
+//   console.log("reward error "+readRewardError)
+//  console.log(Reward);
+//console.log(stakes);
   return (
     <div className="stake-page bg">
       <div>
