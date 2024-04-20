@@ -123,6 +123,10 @@ const Deposit = () => {
     setSortedDeposits(sortedDeposits);
   };
 
+  useEffect(()=>{
+    sortDeposits()
+  },[deposits]);
+
   console.log("deposits", deposits);
   // console.log("isDepositConfirmed", isDepositConfirmed);
   // console.log("isDepositConfirming", isDepositConfirming);
