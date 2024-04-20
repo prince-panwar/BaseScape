@@ -23,8 +23,8 @@ const Deposit = () => {
   const { username, id } = useUserContext();
   const [amount, setAmount] = useState();
   const Router = useRouter();
-  const TOKEN_ADDRESS = "0x2a4c6394886502942d4Dd3d0Fd5E0B6245136f0d";
-  const RECIPIENT_ADDRESS = "0x4B867b047866Fb4Cb39BF159a8f30cF0663c43AF";
+  const TOKEN_ADDRESS="0x6C6e2C5a4EB108A1F3c985d5A7F4f233483e952F";
+  const RECIPIENT_ADDRESS = "0x3896f27Da41d445dC2A302Bd850748EC0A747280";
   const [deposits, setDeposits] = useState([]);
   const [sortedDeposits, setSortedDeposits] = useState([]);
   const { data: balance, error: readerror, refetch: refetchReciverBalance } =
@@ -187,7 +187,7 @@ const Deposit = () => {
             </tbody>
           </table>
         </div>
-        <button onClick={saveInDB}>save</button>
+       
       </div>
     </div>
   );
