@@ -4,7 +4,7 @@ import CustomInput from "../components/input";
 import Button from "../components/button";
 import styles from "./deposit.module.css";
 import tokenabi from "../helpers/Etherscape.json";
-import { txnconfig } from "../helpers/config";
+import txnconfig from "../helpers/config";
 
 import { useUserContext } from "../../context/userContext";
 import {

@@ -5,7 +5,7 @@ import Button from "../components/button";
 import contractabi from "../helpers/FixedStaking.json"
 import tokenabi from "../helpers/TestToken.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { txnconfig } from "../helpers/config";
+import  txnconfig from "../helpers/config";
 import {
   useAccount,
   useSendTransaction,
