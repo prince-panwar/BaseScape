@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/sidebar";
 import CustomInput from "../components/input";
 import Button from "../components/button";
-import contractabi from "../helpers/FixedStaking.json";
+import contractabi from "../helpers/FixedStaking.json"
 import tokenabi from "../helpers/TestToken.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { txnconfig } from "../helpers/config";
@@ -29,7 +29,7 @@ const Stake = () => {
   const [open, setOpen] = useState(false);
   const [txnModalOpen, setTxnModalOpen] = useState(false);
   const [withdrawalId, setWithdrawalId] = useState(null);
-  const ABI = contractabi.abi;
+  const ABI = contractabi;
   const TOKEN_ABI = tokenabi.abi;
   const Router = useRouter();
 
@@ -42,11 +42,11 @@ const Stake = () => {
   const CONTRACT_ADDRESS = "0xDDF827838Ccbc80EF031068e8aD8C5b4B21c6079";
   const TOKEN_ADDRESS = "0x2a4c6394886502942d4Dd3d0Fd5E0B6245136f0d";
 
-  const { writeContract: writeApprove, data: approveHash, isPending: approvPending, isError: approveWalletError } = useWriteContract({ onError: (e) => console.log("inside approve" + e.message) });
-  const { writeContract: writeStake, data: stakeHash, isPending: stakePending, isError: stakeWalletError } = useWriteContract();
+  const { writeContract: writeApprove, data: approveHash, isPending: approvPending, isError: IsapproveWalletError, error:approvewalletError } = useWriteContract({ onError: (e) => console.log("inside approve" + e.message) });
+  const { writeContract: writeStake, data: stakeHash, isPending: stakePending, isError: IsstakeWalletError,error:stakeWalletError } = useWriteContract();
 
   const { isLoading: isApproveConfirming, isSuccess: isApproveConfirmed, error: approveError } = useWaitForTransactionReceipt({ hash: approveHash ,config:txnconfig });
-  const { isLoading: isStakeConfirming, isSuccess: isStakeConfirmed, error: stakeError } = useWaitForTransactionReceipt({ hash: stakeHash, config:txnconfig });
+  const { isLoading: isStakeConfirming, isSuccess: isStakeConfirmed, error: stakeError,isError:isStakeError } = useWaitForTransactionReceipt({ hash: stakeHash, config:txnconfig });
 
   const { writeContract: writewithdraw, data: Hash, isPending: Pending, isError: WithdrawWalletError } = useWriteContract({ onError: (e) => console.log("inside withdraw" + e.message) });
   const { isLoading: isConfirming, isSuccess: isConfirmed, error: WithdrawError } = useWaitForTransactionReceipt({ hash: Hash,config:txnconfig });
@@ -59,7 +59,7 @@ const Stake = () => {
     if (isConnected) {
       console.log("approving token for " + username);
       console.log(stake);
-      try {
+     
         writeApprove({
           abi: [
             {
@@ -79,10 +79,7 @@ const Stake = () => {
           functionName: "approve",
           args: [CONTRACT_ADDRESS, stake * 10 ** 18],
         });
-      } catch (e) {
-        setError(e.message);
-        console.log("inside approve" + e.message);
-      }
+     
     }
   }
 
@@ -103,6 +100,20 @@ const Stake = () => {
     }
   }
 
+  const handleStake= ()=>{
+    console.log("args "+activeIndex + " " + stake);
+    
+      writeStake(
+        {
+          abi: contractabi,
+          address: CONTRACT_ADDRESS,
+          functionName: "stakeTokens",
+          args: [activeIndex, stake * 10 ** 18],
+        },
+        
+      );
+    
+  }
   useEffect(() => {
     if (isConfirmed) {
       updateDB;
@@ -112,19 +123,7 @@ const Stake = () => {
   useEffect(() => {
     console.log("is Approve Confirmed " + isApproveConfirmed);
     if (isApproveConfirmed) {
-      try {
-        writeStake(
-          {
-            abi: ABI,
-            address: CONTRACT_ADDRESS,
-            functionName: "stakeTokens",
-            args: [activeIndex, parseEther(stake)],
-          },
-          []
-        );
-      } catch (e) {
-        setError(e.message);
-      }
+     handleStake();
     }
   }, [isApproveConfirmed]);
 
@@ -260,9 +259,12 @@ const Stake = () => {
     boxShadow: 24,
     background: "#0B0C07",
   };
-//   console.log("reward error "+readRewardError)
-//  console.log(Reward);
-//console.log(stakes);
+
+
+console.log("stake Wallet error "+stakeWalletError);
+console.log("is stake wallet error "+IsstakeWalletError);
+console.log(stakes);
+console.log(address);
   return (
     <div className="stake-page bg">
       <div>
@@ -415,7 +417,7 @@ const Stake = () => {
             </div>
           </Box>
         </Modal>
-       
+       <button onClick={handleStake}>stake</button>
       </div>
     </div>
   );
