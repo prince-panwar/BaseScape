@@ -24,8 +24,9 @@ const Deposit = () => {
   const { username, id } = useUserContext();
   const [amount, setAmount] = useState();
   const Router = useRouter();
-  const TOKEN_ADDRESS="0x6C6e2C5a4EB108A1F3c985d5A7F4f233483e952F";
-  const RECIPIENT_ADDRESS = "0x3896f27Da41d445dC2A302Bd850748EC0A747280";
+  
+  const TOKEN_ADDRESS="0x951eDE122DD3Bb99D09Dd04E6d6B1bD0623A4e49";
+  const RECIPIENT_ADDRESS = "0x78599F131DC867B66BC4c46019a96BB4C2ffd5d8";
   const [deposits, setDeposits] = useState([]);
   const [sortedDeposits, setSortedDeposits] = useState([]);
   const { data: balance, error: readerror, refetch: refetchReciverBalance } =
@@ -127,7 +128,7 @@ const Deposit = () => {
     sortDeposits()
   },[deposits]);
 
-  console.log("deposits", deposits);
+  //console.log("deposits", deposits);
   // console.log("isDepositConfirmed", isDepositConfirmed);
   // console.log("isDepositConfirming", isDepositConfirming);
   // console.log("status", status);

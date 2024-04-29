@@ -16,8 +16,8 @@ import {
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 
 const config = getDefaultConfig({
-  appName: "plena-dapp",
-  projectId: "a9f89b9a755885ebf013bbe8693fa026",
+  appName:  process.env.NEXT_PUBLIC_APP_NAME||"",
+  projectId: process.env.NEXT_PUBLIC_ID||"",
   chains: [
     mainnet,
     polygon,
