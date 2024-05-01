@@ -30,7 +30,7 @@ const Home = () => {
           {!isConnected ? (
             <div>
               <p>
-                Welcome to EtherScape Dapp! <br /> Please Connect Your Wallet to
+                Welcome to BaseScape Dapp! <br /> Please Connect Your Wallet to
                 <br />
                 Proceed
               </p>
