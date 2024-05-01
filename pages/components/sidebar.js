@@ -50,27 +50,27 @@ const Sidebar = () => {
       <Image src={Logo} alt="logo" />
       <div className="social-media">
         <span>
-          <Link href="https://twitter.com/Ether_Scape" target="_blank" rel="noopener noreferrer">
+          <Link href="https://x.com/base_scape" target="_blank" rel="noopener noreferrer">
             <Image src={X} alt="twiiter" />
           </Link>
         </span>
         <span>
-          <Link href="https://t.me/Etherscape" target="_blank" rel="noopener noreferrer">
+          <Link href="https://t.me/BaseScape" target="_blank" rel="noopener noreferrer">
             <Image src={Telegram} alt="telegram" />
           </Link>
         </span>
         <span>
-          <Link href="https://discord.gg/ether-scape" target="_blank" rel="noopener noreferrer">
+          <Link href="https://discord.com/invite/basescape" target="_blank" rel="noopener noreferrer">
             <Image src={Discord} alt="discord" />
           </Link>
         </span>
         <span>
-          <Link href="https://medium.com/@Ether_Scape" target="_blank" rel="noopener noreferrer">
+          <Link href="https://medium.com/@BaseScape" target="_blank" rel="noopener noreferrer">
             <Image src={Medium} alt="Medium" />
           </Link>
         </span>
         <span>
-          <Link href="https://medium.com/@Ether_Scape" target="_blank" rel="noopener noreferrer">
+          <Link href="https://medium.com/@Base_Scape" target="_blank" rel="noopener noreferrer">
             <Image src={GitBook} alt="gitBook" />
           </Link>
         </span>
