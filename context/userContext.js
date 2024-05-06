@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
     if (data.length > 0) {
       // Assuming the ID is returned as a string from your API
       setId(BigInt(data[0].id));
-      router.push(`/deposit`);
+      router.push(`/stake`);
     } else {
       const body = { username: username };
       const addUserRes = await fetch("/api/addUser", {

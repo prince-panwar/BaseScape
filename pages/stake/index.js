@@ -34,10 +34,10 @@ const Stake = () => {
   const Router = useRouter();
 
   useEffect(() => {
-    if (!username) {
+    if (!isConnected) {
       Router.push("./");
     }
-  }, [username]);
+  }, [isConnected]);
 
   const CONTRACT_ADDRESS = "0xea2313d463a63e9988586f3CFf3B1AD01F8FCc37";
   const TOKEN_ADDRESS = "0x951eDE122DD3Bb99D09Dd04E6d6B1bD0623A4e49";
@@ -48,7 +48,7 @@ const Stake = () => {
   const { isLoading: isApproveConfirming, isSuccess: isApproveConfirmed, error: approveError } = useWaitForTransactionReceipt({ hash: approveHash ,config:txnconfig });
   const { isLoading: isStakeConfirming, isSuccess: isStakeConfirmed, error: stakeError,isError:isStakeError } = useWaitForTransactionReceipt({ hash: stakeHash, config:txnconfig });
 
-  const { writeContract: writewithdraw, data: Hash, isPending: Pending, isError: WithdrawWalletError } = useWriteContract({ onError: (e) => console.log("inside withdraw" + e.message) });
+  const { writeContract: writewithdraw, data: Hash, isPending: Pending, isError: isWithdrawWalletError ,error:WithdrawWalletError } = useWriteContract({ onError: (e) => console.log("inside withdraw" + e.message) });
   const { isLoading: isConfirming, isSuccess: isConfirmed, error: WithdrawError } = useWaitForTransactionReceipt({ hash: Hash,config:txnconfig });
 
   const APY = [12, 26, 58, 80, 120];
@@ -92,7 +92,7 @@ const Stake = () => {
           abi: ABI,
           address: CONTRACT_ADDRESS,
           functionName: "withdrawTokens",
-          args: [withdrawalId],
+          args: [id],
         });
       } catch (e) {
         setError(e.message);
@@ -141,15 +141,16 @@ const Stake = () => {
 
   async function saveInDB() {
     const endDate = Date.now() + Duration[activeIndex] * 24 * 60 * 60 * 1000;
+    const idValue = id ? id.toString() : "000"; // If id is not present, use "000"
     const body = {
-      id: id.toString(),
+      id: idValue,
       amount: parseFloat(stake),
       address: address,
       start: Date.now().toString(),
       duration: Duration[activeIndex].toString(),
       end: endDate.toString(),
     };
-
+  
     await fetch("/api/stake", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -159,6 +160,7 @@ const Stake = () => {
       ),
     });
   }
+  
 
   async function updateDB(stakeId) {
     const body = {
@@ -263,8 +265,12 @@ const Stake = () => {
 
 console.log("stake Wallet error "+stakeWalletError);
 console.log("is stake wallet error "+IsstakeWalletError);
-console.log(stakes);
-console.log(address);
+console.log("is stake error "+isStakeError);
+console.log("stake error "+stakeError);
+// console.log(stakes);
+// console.log(address);
+console.log("withdraw wallet error "+WithdrawWalletError);
+
   return (
     <div className="stake-page bg">
       <div>

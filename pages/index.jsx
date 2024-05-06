@@ -61,6 +61,9 @@ const Home = () => {
               >
                 Submit
               </button>
+              <button className="yellow-btn" onClick={()=>router.push("/stake")}>
+                Skip
+              </button>
             </div>
           )}
         </div>
