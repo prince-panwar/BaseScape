@@ -54,8 +54,15 @@ const Home = () => {
               />
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
               <button
+              className="yellow-btn"
+              style={{ marginRight: '10px' }}
+              onClick={() => router.push("/stake")}
+              >
+                Skip
+              </button>
+              <button
                 className="yellow-btn"
-                style={{ marginRight: '10px' }}
+               
                 onClick={() => {
                   setConfirm(true);
                   verifyUser(user);
@@ -63,12 +70,7 @@ const Home = () => {
               >
                 Submit
               </button>
-              <button
-              className="yellow-btn"
-              onClick={() => router.push("/stake")}
-              >
-                Skip
-              </button>
+             
 
               </div>
             </div>
