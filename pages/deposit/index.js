@@ -182,7 +182,7 @@ const Deposit = () => {
                   <tr key={index}>
                     <td>{deposit.username}</td>
                     <td>{deposit.amount + " $Scape"}</td>
-                    <td>{deposit.claim ? "No" : "Yes"}</td>
+                    <td>{deposit.claim==false? "No" : "Yes"}</td>
                   </tr>
                 ))}
             </tbody>
