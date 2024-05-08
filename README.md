@@ -1,29 +1,74 @@
-This is a [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Next.js](https://nextjs.org/) project bootstrapped with [`create-rainbowkit`](/packages/create-rainbowkit).
+# FixedStaking Smart Contract
 
-## Getting Started
+## Overview
 
-First, run the development server:
+The `FixedStaking` smart contract allows users to stake tokens for a fixed duration and earn rewards based on the Annual Percentage Yield (APY).
 
-```bash
-npm run dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Users can stake tokens for multiple predefined durations.
+- Rewards are calculated based on the duration of the stake and the APY.
+- Supports early withdrawal with a penalty.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-## Learn More
+## Contract Architecture
 
-To learn more about this stack, take a look at the following resources:
+The contract comprises the following main components:
 
-- [RainbowKit Documentation](https://rainbowkit.com) - Learn how to customize your wallet connection flow.
-- [wagmi Documentation](https://wagmi.sh) - Learn how to interact with Ethereum.
-- [Next.js Documentation](https://nextjs.org/docs) - Learn how to build a Next.js application.
+- **Stake:** A struct to represent a user's stake, containing information such as amount, duration, start time, APY, and withdrawal status.
+- **Mappings:**
+  - `userStakes`: Maps users to their stakes.
+  - `durationToAPY`: Maps durations to their corresponding APYs.
+- **Events:**
+  - `Staked`: Fired when a user stakes tokens.
+  - `Withdrawn`: Fired when a user withdraws tokens.
+- **Modifiers:**
+  - `onlyOwner`: Ensures that only the contract owner can execute certain functions.
+- **Functions:**
+  - `stakeTokens`: Allows users to stake tokens for a specified duration.
+  - `withdrawTokens`: Allows users to withdraw tokens from a stake.
+  - `calculateReward`: Internal function to calculate the reward for a stake.
+  - `getStakes`: Allows users to get their stakes.
+  - `updateAPY`: Allows the contract owner to update APYs for different durations.
 
-You can check out [the RainbowKit GitHub repository](https://github.com/rainbow-me/rainbowkit) - your feedback and contributions are welcome!
+## Functions
 
-## Deploy on Vercel
+### `stakeTokens(uint256 _selectedDurationIndex, uint256 _amount) external nonReentrant`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Allows users to stake tokens for a specified duration.
 
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- `_selectedDurationIndex`: Index of the selected duration from the `stakingDurations` array.
+- `_amount`: Amount of tokens to stake.
+
+### `withdrawTokens(uint256 _stakeIndex) external nonReentrant returns (uint256)`
+
+Allows users to withdraw tokens from a stake.
+
+- `_stakeIndex`: Index of the stake to withdraw from.
+
+### `calculateRewardForStake(address _user, uint256 _stakeIndex) external view returns (uint256)`
+
+Calculates the reward for a specific stake of a user.
+
+- `_user`: Address of the user.
+- `_stakeIndex`: Index of the stake.
+
+### `calculateTotalRewardForStake(address _user, uint256 _stakeIndex) external view returns (uint256)`
+
+Calculates the total reward for a specific stake of a user including taxes.
+
+- `_user`: Address of the user.
+- `_stakeIndex`: Index of the stake.
+
+### `getStakes(address _user) external view returns (Stake[] memory)`
+
+Returns an array of stakes for a user.
+
+- `_user`: Address of the user.
+
+### `updateAPY(uint256 _duration, uint256 _newAPY) external onlyOwner`
+
+Allows the contract owner to update APYs for different durations.
+
+- `_duration`: Duration for which to update APY (in seconds).
+- `_newAPY`: New APY for the specified duration (in basis points).
