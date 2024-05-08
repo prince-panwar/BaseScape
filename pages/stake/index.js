@@ -262,15 +262,16 @@ const Stake = () => {
     background: "#0B0C07",
   };
 
-console.log(userbalance);
-console.log(Reward);
-console.log("stake Wallet error "+stakeWalletError);
-console.log("is stake wallet error "+IsstakeWalletError);
-console.log("is stake error "+isStakeError);
-console.log("stake error "+stakeError);
+// console.log(userbalance);
+// console.log(Reward);
+// console.log("stake Wallet error "+stakeWalletError);
+// console.log("is stake wallet error "+IsstakeWalletError);
+// console.log("is stake error "+isStakeError);
+// console.log("stake error "+stakeError);
 // console.log(stakes);
 // console.log(address);
-//console.log("withdraw wallet error "+WithdrawWalletError);
+console.log("withdraw wallet error "+WithdrawWalletError);
+console.log("is withdraw error",isWithdrawWalletError);
 
   return (
     <div className="stake-page bg">
