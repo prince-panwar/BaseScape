@@ -77,7 +77,7 @@ const Stake = () => {
           ],
           address: TOKEN_ADDRESS,
           functionName: "approve",
-          args: [CONTRACT_ADDRESS, stake * 10 ** 18],
+          args: [CONTRACT_ADDRESS, stake * 10 ** 9],
         });
      
     }
@@ -108,7 +108,7 @@ const Stake = () => {
           abi: contractabi,
           address: CONTRACT_ADDRESS,
           functionName: "stakeTokens",
-          args: [activeIndex, stake * 10 ** 18],
+          args: [activeIndex, stake * 10 ** 9],
         },
         
       );
@@ -262,14 +262,15 @@ const Stake = () => {
     background: "#0B0C07",
   };
 
-
+console.log(userbalance);
+console.log(Reward);
 console.log("stake Wallet error "+stakeWalletError);
 console.log("is stake wallet error "+IsstakeWalletError);
 console.log("is stake error "+isStakeError);
 console.log("stake error "+stakeError);
 // console.log(stakes);
 // console.log(address);
-console.log("withdraw wallet error "+WithdrawWalletError);
+//console.log("withdraw wallet error "+WithdrawWalletError);
 
   return (
     <div className="stake-page bg">
@@ -310,19 +311,21 @@ console.log("withdraw wallet error "+WithdrawWalletError);
             </div>
             <div>
               <span>Balance</span>
-            {!!userbalance && typeof userbalance === "bigint" ? (
-            <span>
-             {formatEther(userbalance).slice(0,6)} $scape
-            </span>
-          ):(<span>
-            0.0  $scape
-           </span>)}
+              {!!userbalance && typeof userbalance === "bigint" ? (
+                <span>
+                  {(Number(userbalance) / 10**9).toFixed(9)} $scape
+                </span>
+              ) : (
+                <span>
+                  0.0 $scape
+                </span>
+              )}
             </div>
             <div>
               <span className="tvl">TVL</span>
               {!!balance && typeof balance === "bigint" && (
-                <span>{formatEther(balance)}</span>
-              )}
+                 <span>{(Number(balance)/ 10**9).toFixed(9)}</span>
+)}
             </div>
           </div>
           <Button onClick={approvetoken} className="yellow-btn">
@@ -349,15 +352,16 @@ console.log("withdraw wallet error "+WithdrawWalletError);
                 stakes.map((stake, index) => (
                   <tr key={index}>
                     <td>{Number(stake.duration) / 86400}D</td>
-                    <td>{Number(stake.amount) / 10 ** 18}</td>
+                    <td>{Number(stake.amount) / 10 ** 9}</td>
                     {!!Reward[index] && typeof Reward[index] === "bigint" ? (
-                        <td>{formatEther(Reward[index])}</td>
-                      ) : (
-                        <td>{new Intl.NumberFormat('en-US', {
-                          minimumFractionDigits: 18,
-                          maximumFractionDigits: 18
-                        }).format(0)}</td>
-                      )}
+                      <td>{(Number(Reward[index]) / 10**9).toFixed(9)}</td>
+                    ) : (
+                      <td>{new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 9,
+                        maximumFractionDigits: 9
+                      }).format(0)}</td>
+                    )}
+
 
                     <td>{convertTimestampToDate(stake.startTime + stake.duration)}</td>
                     <td>

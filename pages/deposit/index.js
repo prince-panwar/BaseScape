@@ -74,7 +74,7 @@ const Deposit = () => {
       abi: tokenabi,
       address: TOKEN_ADDRESS,
       functionName: "transfer",
-      args: [RECIPIENT_ADDRESS, amount * 10 ** 18],
+      args: [RECIPIENT_ADDRESS, amount * 10 ** 9],
     });
   };
 
@@ -143,7 +143,7 @@ const Deposit = () => {
             <div>
               <p>Balance</p>
               {!!userbalance && typeof userbalance === 'bigint' ? (
-                <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{formatEther(userbalance) + " $scape"}</span>
+                <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{Number(userbalance)/10**9 + " $scape"}</span>
               ) : (
                 <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{0.0 + " $scape"}</span>
               )}
@@ -151,7 +151,7 @@ const Deposit = () => {
             <div>
               <p>Locked Tokens</p>
               {!!balance && typeof balance === 'bigint' ? (
-                <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{formatEther(balance) + " $scape"}</span>
+                <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{Number(balance)/10**9 + " $scape"}</span>
               ) : (
                 <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{0.0 + " $scape"}</span>
               )}

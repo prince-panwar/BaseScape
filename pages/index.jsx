@@ -70,9 +70,7 @@ const Home = () => {
               >
                 Submit
               </button>
-             
-
-              </div>
+            </div>
             </div>
           )}
         </div>
