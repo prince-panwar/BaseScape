@@ -104,15 +104,15 @@ const Stake = () => {
   const handleStake= ()=>{
     console.log("args "+activeIndex + " " + stake);
     
-      writeStake(
-        {
-          abi: contractabi,
-          address: CONTRACT_ADDRESS,
-          functionName: "stakeTokens",
-          args: [activeIndex, stake * 10 ** 9],
-        },
+      // writeStake(
+      //   {
+      //     abi: contractabi,
+      //     address: CONTRACT_ADDRESS,
+      //     functionName: "stakeTokens",
+      //     args: [activeIndex, stake * 10 ** 9],
+      //   },
         
-      );
+      // );
     
   }
   useEffect(() => {
