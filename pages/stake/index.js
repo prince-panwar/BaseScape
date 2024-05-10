@@ -87,16 +87,17 @@ const Stake = () => {
     if (id != null) {
       setOpen(false);
       console.log("withdrawing token for stake id " + id);
-      try {
-        writewithdraw({
-          abi: ABI,
-          address: CONTRACT_ADDRESS,
-          functionName: "withdrawTokens",
-          args: [id],
-        });
-      } catch (e) {
-        setError(e.message);
-      } 
+      // try {
+      //   writewithdraw({
+      //     abi: ABI,
+      //     address: CONTRACT_ADDRESS,
+      //     functionName: "withdrawTokens",
+      //     args: [id],
+      //   });
+      // } catch (e) {
+      //   setError(e.message);
+      // }
+      alert("Withdrawals are disabled for now"); 
     }
   }
 
