@@ -32,7 +32,7 @@ const Stake = () => {
   const ABI = contractabi;
   const TOKEN_ABI = tokenabi.abi;
   const Router = useRouter();
-
+  const [apyIndex, setApyIndex] = useState(0);
   useEffect(() => {
     if (!isConnected) {
       Router.push("./");
@@ -50,9 +50,9 @@ const Stake = () => {
 
   const { writeContract: writewithdraw, data: Hash, isPending: Pending, isError: isWithdrawWalletError ,error:WithdrawWalletError } = useWriteContract({ onError: (e) => console.log("inside withdraw" + e.message) });
   const { isLoading: isConfirming, isSuccess: isConfirmed, error: WithdrawError } = useWaitForTransactionReceipt({ hash: Hash,config:txnconfig });
-
+  
   const APY = [12, 26, 58, 80, 120];
-  const Duration = [7, 14, 21, 30, 60];
+  const Duration = [604800,1209600,1814400,2592000,5184000];
 
   async function approvetoken() {
     setTxnModalOpen(true);
@@ -210,7 +210,21 @@ const Stake = () => {
     functionName: "getStakes",
     args: [address],
   });
-
+  const {
+    data: apy,
+    error: APYreadError,
+    refetch: refetchAPY,
+  } = useReadContract({
+    abi: ABI,
+    address: CONTRACT_ADDRESS,
+    functionName: "durationToAPY",
+    args: [Duration[apyIndex]],
+  });
+  useEffect(() => {
+    refetchAPY()
+   
+  },[apyIndex]);
+ 
   useEffect(() => {
     console.log("refetching data");
     refetchTVL();
@@ -271,9 +285,10 @@ const Stake = () => {
 // console.log("stake error "+stakeError);
 // console.log(stakes);
 // console.log(address);
-console.log("withdraw wallet error "+WithdrawWalletError);
-console.log("is withdraw error",isWithdrawWalletError);
-
+// console.log("withdraw wallet error "+WithdrawWalletError);
+// console.log("is withdraw error",isWithdrawWalletError);
+console.log(apy);
+console.log(APYreadError);
   return (
     <div className="stake-page bg">
       <div>
@@ -296,7 +311,7 @@ console.log("is withdraw error",isWithdrawWalletError);
                   <li
                     key={index}
                     className={index === activeIndex ? "active" : ""}
-                    onClick={() => handleActive(index)}
+                    onClick={() =>{ handleActive(index); setApyIndex(index)}}
                   >
                     {number}
                   </li>
@@ -305,7 +320,7 @@ console.log("is withdraw error",isWithdrawWalletError);
             </div>
             <div>
               <span>APY</span>
-              <span>{APY[activeIndex]}%</span>
+              <span>{Number(apy)}%</span>
             </div>
             <div>
               <span>Withdraw Tax</span>
