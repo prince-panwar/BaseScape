@@ -59,26 +59,26 @@ const Stake = () => {
     if (isConnected) {
       console.log("approving token for " + username);
       console.log(stake);
-     
-        writeApprove({
-          abi: [
-            {
-              constant: false,
-              inputs: [
-                { name: "_spender", type: "address" },
-                { name: "_value", type: "uint256" },
-              ],
-              name: "approve",
-              outputs: [],
-              payable: false,
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-          ],
-          address: TOKEN_ADDRESS,
-          functionName: "approve",
-          args: [CONTRACT_ADDRESS, stake * 10 ** 9],
-        });
+     alert("staking is disabled for a short time for maintenance");
+        // writeApprove({
+        //   abi: [
+        //     {
+        //       constant: false,
+        //       inputs: [
+        //         { name: "_spender", type: "address" },
+        //         { name: "_value", type: "uint256" },
+        //       ],
+        //       name: "approve",
+        //       outputs: [],
+        //       payable: false,
+        //       stateMutability: "nonpayable",
+        //       type: "function",
+        //     },
+        //   ],
+        //   address: TOKEN_ADDRESS,
+        //   functionName: "approve",
+        //   args: [CONTRACT_ADDRESS, stake * 10 ** 9],
+        // });
      
     }
   }
