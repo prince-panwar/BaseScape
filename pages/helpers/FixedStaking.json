@@ -41,6 +41,20 @@
       "inputs":[
          
       ],
+      "name":"EnforcedPause",
+      "type":"error"
+   },
+   {
+      "inputs":[
+         
+      ],
+      "name":"ExpectedPause",
+      "type":"error"
+   },
+   {
+      "inputs":[
+         
+      ],
       "name":"FailedInnerCall",
       "type":"error"
    },
@@ -68,6 +82,38 @@
          {
             "indexed":true,
             "internalType":"address",
+            "name":"previousOwner",
+            "type":"address"
+         },
+         {
+            "indexed":true,
+            "internalType":"address",
+            "name":"newOwner",
+            "type":"address"
+         }
+      ],
+      "name":"OwnershipTransferred",
+      "type":"event"
+   },
+   {
+      "anonymous":false,
+      "inputs":[
+         {
+            "indexed":false,
+            "internalType":"address",
+            "name":"account",
+            "type":"address"
+         }
+      ],
+      "name":"Paused",
+      "type":"event"
+   },
+   {
+      "anonymous":false,
+      "inputs":[
+         {
+            "indexed":true,
+            "internalType":"address",
             "name":"staker",
             "type":"address"
          },
@@ -85,6 +131,19 @@
          }
       ],
       "name":"Staked",
+      "type":"event"
+   },
+   {
+      "anonymous":false,
+      "inputs":[
+         {
+            "indexed":false,
+            "internalType":"address",
+            "name":"account",
+            "type":"address"
+         }
+      ],
+      "name":"Unpaused",
       "type":"event"
    },
    {
@@ -202,11 +261,6 @@
                   "type":"uint256"
                },
                {
-                  "internalType":"uint256",
-                  "name":"apy",
-                  "type":"uint256"
-               },
-               {
                   "internalType":"bool",
                   "name":"isWithdrawn",
                   "type":"bool"
@@ -245,6 +299,32 @@
             "internalType":"address",
             "name":"",
             "type":"address"
+         }
+      ],
+      "stateMutability":"view",
+      "type":"function"
+   },
+   {
+      "inputs":[
+         
+      ],
+      "name":"pause",
+      "outputs":[
+         
+      ],
+      "stateMutability":"nonpayable",
+      "type":"function"
+   },
+   {
+      "inputs":[
+         
+      ],
+      "name":"paused",
+      "outputs":[
+         {
+            "internalType":"bool",
+            "name":"",
+            "type":"bool"
          }
       ],
       "stateMutability":"view",
@@ -322,6 +402,32 @@
    {
       "inputs":[
          {
+            "internalType":"address",
+            "name":"newOwner",
+            "type":"address"
+         }
+      ],
+      "name":"transferOwnership",
+      "outputs":[
+         
+      ],
+      "stateMutability":"nonpayable",
+      "type":"function"
+   },
+   {
+      "inputs":[
+         
+      ],
+      "name":"unpause",
+      "outputs":[
+         
+      ],
+      "stateMutability":"nonpayable",
+      "type":"function"
+   },
+   {
+      "inputs":[
+         {
             "internalType":"uint256",
             "name":"_duration",
             "type":"uint256"
@@ -367,11 +473,6 @@
          {
             "internalType":"uint256",
             "name":"startTime",
-            "type":"uint256"
-         },
-         {
-            "internalType":"uint256",
-            "name":"apy",
             "type":"uint256"
          },
          {

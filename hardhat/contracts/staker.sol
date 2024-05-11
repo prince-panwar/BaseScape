@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract FixedStaking is ReentrancyGuard {
+contract FixedStaking is ReentrancyGuard, Pausable {
     using SafeERC20 for IERC20;
 
     IERC20 public stakingToken;
@@ -15,7 +16,6 @@ contract FixedStaking is ReentrancyGuard {
         uint256 amount;
         uint256 duration;
         uint256 startTime;
-        uint256 apy;
         bool isWithdrawn;
     }
 
@@ -28,15 +28,16 @@ contract FixedStaking is ReentrancyGuard {
 
     event Staked(address indexed staker, uint256 amount, uint256 duration);
     event Withdrawn(address indexed staker, uint256 amount);
-
-    constructor(address _token) {
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    constructor(address _token, address _owner) {
         stakingToken = IERC20(_token);
-        durationToAPY[7 days] = 1200; 
-        durationToAPY[14 days] = 2600; 
-        durationToAPY[21 days] = 5800; 
-        durationToAPY[30 days] = 8000; 
-        durationToAPY[60 days] = 12000; 
-        owner = msg.sender;
+        owner = _owner;
+        durationToAPY[7 days] = 12; 
+        durationToAPY[14 days] = 26; 
+        durationToAPY[21 days] = 58; 
+        durationToAPY[30 days] = 80; 
+        durationToAPY[60 days] = 120; 
+       
     }
 
     modifier onlyOwner() {
@@ -44,17 +45,17 @@ contract FixedStaking is ReentrancyGuard {
         _;
     }
 
-    function stakeTokens(uint256 _selectedDurationIndex, uint256 _amount) external nonReentrant {
+    function stakeTokens(uint256 _selectedDurationIndex, uint256 _amount) external nonReentrant whenNotPaused {
         require(_selectedDurationIndex < stakingDurations.length, "Invalid duration index");
         require(stakingToken.balanceOf(msg.sender) >= _amount, "Insufficient Balance");
+        require(_amount > 0, "Invalid amount");
         uint256 selectedDuration = stakingDurations[_selectedDurationIndex];
-        uint256 APY = durationToAPY[selectedDuration];
+        
 
         userStakes[msg.sender].push(Stake({
             amount: _amount,
             duration: selectedDuration,
             startTime: block.timestamp,
-            apy: APY,
             isWithdrawn: false
         }));
 
@@ -65,7 +66,7 @@ contract FixedStaking is ReentrancyGuard {
         emit Staked(msg.sender, _amount, selectedDuration);
     }
 
-    function withdrawTokens(uint256 _stakeIndex) external nonReentrant returns (uint256){
+    function withdrawTokens(uint256 _stakeIndex) external nonReentrant whenNotPaused returns (uint256){
         require(_stakeIndex < userStakes[msg.sender].length, "Invalid stake index");
         Stake storage stake = userStakes[msg.sender][_stakeIndex];
         require(!stake.isWithdrawn, "Tokens already withdrawn");
@@ -73,7 +74,7 @@ contract FixedStaking is ReentrancyGuard {
         uint256 RewardAmount = calculateReward(stake);
         uint256 finalAmount = stake.amount+RewardAmount;
         stake.isWithdrawn = true;
-        totalStaked -= finalAmount;
+        totalStaked -= stake.amount;
 
         stakingToken.safeTransfer(msg.sender, finalAmount);
 
@@ -81,38 +82,45 @@ contract FixedStaking is ReentrancyGuard {
         return finalAmount;
     }
 
+
     function calculateReward(Stake storage _stake) internal view returns (uint256) {
         uint256 elapsedTime = block.timestamp - _stake.startTime;
         uint256 withdrawalTax;
-        
-        if (elapsedTime >= _stake.duration) {
-            // Calculate reward based on the pool duration
-            uint256 yield = (_stake.amount * _stake.apy * (_stake.duration / 86400)) / (365 days * 10000);
-            withdrawalTax = (yield * WITHDRAWAL_TAX_PERCENT) / 100;
-            return yield - withdrawalTax;
-        } else {
-            // Calculate reward based on the number of days staked
-            uint256 partialYield = (_stake.amount * _stake.apy * (elapsedTime/86400)) / (365 days * 10000);
-            withdrawalTax = (partialYield * EARLY_WITHDRAWAL_TAX_PERCENT) / 100;
-            return partialYield - withdrawalTax;
+        uint256 scalingFactor = 1e9; // Define a scaling factor for precision
+        uint256 apy = durationToAPY[_stake.duration];
+        if(elapsedTime> _stake.duration){
+            elapsedTime = _stake.duration;
         }
+
+        // Calculate yield based on the duration
+        uint256 yield = (_stake.amount * apy * elapsedTime) / (86400 * 365 * 100);
+       
+       // Calculate the withdrawal tax based on the duration
+        if (elapsedTime >= _stake.duration) {
+            withdrawalTax = (yield * WITHDRAWAL_TAX_PERCENT) / 100;
+        } else {
+            withdrawalTax = (yield * EARLY_WITHDRAWAL_TAX_PERCENT) / 100;
+        }
+
+        // Apply the scaling factor to the yield and the withdrawal tax
+        yield = yield * scalingFactor;
+        withdrawalTax = withdrawalTax * scalingFactor;
+
+        return (yield - withdrawalTax) / scalingFactor;
     }
+
     
-    function calculateRewardForStake(address _user, uint256 _stakeIndex) external view returns (uint256) {
-        require(_stakeIndex < userStakes[_user].length, "Invalid stake index");
-        Stake storage stake = userStakes[_user][_stakeIndex];
-        return calculateReward(stake);
+    function calculateRewardsForUser(address _user) external view returns (uint256[] memory) {
+        Stake[] storage stakes = userStakes[_user];
+        uint256[] memory rewards = new uint256[](stakes.length);
+
+        for (uint256 i = 0; i < stakes.length; i++) {
+            rewards[i] = calculateReward(stakes[i]);
+        }
+
+        return rewards;
     }
-    function calculateTotalRewardForStake(address _user, uint256 _stakeIndex) external view returns (uint256) {
-        uint256 withdrawalTax;
-        require(_stakeIndex < userStakes[_user].length, "Invalid stake index");
-        
-        Stake storage stake = userStakes[_user][_stakeIndex];
-        uint256 yield = (stake.amount * stake.apy * (stake.duration / 86400)) / (365 days * 10000);
-        withdrawalTax = (yield * WITHDRAWAL_TAX_PERCENT) / 100;
-        return yield - withdrawalTax;
-        
-    }
+  
    
 
     function getStakes(address _user) external view returns (Stake[] memory) {
@@ -124,7 +132,21 @@ contract FixedStaking is ReentrancyGuard {
         durationToAPY[_duration] = _newAPY;
     }
 
+
     function getTVL() external view returns (uint256) {
         return stakingToken.balanceOf(address(this));
+    }
+
+    function pause() external onlyOwner {
+    _pause();
+    }
+
+    function unpause() external onlyOwner {
+    _unpause();
+    }
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "New owner cannot be the zero address");
+        emit OwnershipTransferred(owner, newOwner);
+        owner = newOwner;
     }
 }

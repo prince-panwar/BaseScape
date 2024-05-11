@@ -132,6 +132,7 @@ const Deposit = () => {
   // console.log("isDepositConfirmed", isDepositConfirmed);
   // console.log("isDepositConfirming", isDepositConfirming);
   // console.log("status", status);
+  console.log("balance", balance);
   console.log("sortedDeposits", sortedDeposits);
   return (
     <div className="deposit-page bg">
@@ -151,7 +152,7 @@ const Deposit = () => {
             <div>
               <p>Locked Tokens</p>
               {!!balance && typeof balance === 'bigint' ? (
-                <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{Number(balance)/10**9 + " $scape"}</span>
+                <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{Number(balance).toString().slice(0,-9) + " $scape"}</span>
               ) : (
                 <span style={{ color: "#f4ffb0", fontFamily: "Inter", fontSize: "17px" }}>{0.0 + " $scape"}</span>
               )}

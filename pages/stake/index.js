@@ -39,7 +39,7 @@ const Stake = () => {
     }
   }, [isConnected]);
 
-  const CONTRACT_ADDRESS = "0x864ffE78E7Ec92b5B9FedC2F58005d31AD9b6314";
+  const CONTRACT_ADDRESS = "0x3C0387eD58A05CE8fb35Dd6dF46769422C2Bf36d";
   const TOKEN_ADDRESS = "0x951eDE122DD3Bb99D09Dd04E6d6B1bD0623A4e49";
 
   const { writeContract: writeApprove, data: approveHash, isPending: approvPending, isError: IsapproveWalletError, error:approvewalletError } = useWriteContract({ onError: (e) => console.log("inside approve" + e.message) });
@@ -59,26 +59,26 @@ const Stake = () => {
     if (isConnected) {
       console.log("approving token for " + username);
       console.log(stake);
-     alert("staking is disabled for a short time for maintenance");
-        // writeApprove({
-        //   abi: [
-        //     {
-        //       constant: false,
-        //       inputs: [
-        //         { name: "_spender", type: "address" },
-        //         { name: "_value", type: "uint256" },
-        //       ],
-        //       name: "approve",
-        //       outputs: [],
-        //       payable: false,
-        //       stateMutability: "nonpayable",
-        //       type: "function",
-        //     },
-        //   ],
-        //   address: TOKEN_ADDRESS,
-        //   functionName: "approve",
-        //   args: [CONTRACT_ADDRESS, stake * 10 ** 9],
-        // });
+    
+        writeApprove({
+          abi: [
+            {
+              constant: false,
+              inputs: [
+                { name: "_spender", type: "address" },
+                { name: "_value", type: "uint256" },
+              ],
+              name: "approve",
+              outputs: [],
+              payable: false,
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+          ],
+          address: TOKEN_ADDRESS,
+          functionName: "approve",
+          args: [CONTRACT_ADDRESS, stake * 10 ** 9],
+        });
      
     }
   }
@@ -87,32 +87,32 @@ const Stake = () => {
     if (id != null) {
       setOpen(false);
       console.log("withdrawing token for stake id " + id);
-      // try {
-      //   writewithdraw({
-      //     abi: ABI,
-      //     address: CONTRACT_ADDRESS,
-      //     functionName: "withdrawTokens",
-      //     args: [id],
-      //   });
-      // } catch (e) {
-      //   setError(e.message);
-      // }
-      alert("Withdrawals are disabled for now"); 
+      try {
+        writewithdraw({
+          abi: ABI,
+          address: CONTRACT_ADDRESS,
+          functionName: "withdrawTokens",
+          args: [id],
+        });
+      } catch (e) {
+        setError(e.message);
+      }
+      
     }
   }
 
   const handleStake= ()=>{
     console.log("args "+activeIndex + " " + stake);
     
-      // writeStake(
-      //   {
-      //     abi: contractabi,
-      //     address: CONTRACT_ADDRESS,
-      //     functionName: "stakeTokens",
-      //     args: [activeIndex, stake * 10 ** 9],
-      //   },
+      writeStake(
+        {
+          abi: contractabi,
+          address: CONTRACT_ADDRESS,
+          functionName: "stakeTokens",
+          args: [activeIndex, stake * 10 ** 9],
+        },
         
-      // );
+      );
     
   }
   useEffect(() => {
